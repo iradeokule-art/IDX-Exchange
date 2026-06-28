@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 df202401 = pd.read_csv("C:/Users/iradeokule/Desktop/crmls/CRMLSListing202401.csv", encoding = "ISO-8859-1") # df is Pandas dataframe
 df202402 = pd.read_csv("C:/Users/iradeokule/Desktop/crmls/CRMLSListing202402.csv", encoding = "ISO-8859-1") # df is Pandas dataframe
 df202403 = pd.read_csv("C:/Users/iradeokule/Desktop/crmls/CRMLSListing202403.csv", encoding = "ISO-8859-1") # df is Pandas dataframe
@@ -31,7 +32,57 @@ df202603 = pd.read_csv("C:/Users/iradeokule/Desktop/crmls/CRMLSListing202603.csv
 df202604 = pd.read_csv("C:/Users/iradeokule/Desktop/crmls/CRMLSListing202604.csv", encoding = "ISO-8859-1")
 df202605 = pd.read_csv("C:/Users/iradeokule/Desktop/crmls/CRMLSListing202605.csv", encoding = "ISO-8859-1")
 
-frames=[df202401,df202402,df202403,df202404,df202405, df202406, df202407, df202408, df202409, df202410, df202411, df202412, df202501, df202502, df202503, df202504, df202505,df202506, df202507, df202508, df202509,df202510,df202511,df202512, df202601, df202602]
-combine=pd.concat(frames, ignore_index=True)
-listings = combine[combine.PropertyType=='Residential']
+frames=[df202401,df202402,df202403,df202404,df202405, df202406, df202407, df202408, df202409, df202410, df202411, df202412, df202501, df202502, df202503, df202504, df202505,df202506, df202507, df202508, df202509,df202510,df202511,df202512, df202601, df202602, df202603, df202604, df202605]
+listings=pd.concat(frames, ignore_index=True)
+#listings = combine[combine.PropertyType=='Residential']
+listings.to_csv("listings_all.csv", index=False)
+print(listings.shape)
+print(listings.columns)
+print(listings.head())
+print(listings["PropertyType"].unique())
+print("Rows before filtering: "+ str(len(listings)))
+listings = listings[listings.PropertyType=='Residential']
+print("Rows after filtering: "+ str(len(listings)))
+print(listings.isnull().sum())
+allCols = listings.select_dtypes(include = "number").columns
+for c in allCols:
+    info = listings[c].dropna()
+    if info.empty:
+        continue
+    plt.hist(info.values, bins=100)
+    plt.title("Distribution of " + c)
+    q1 = listings[c].quantile(0.25)
+    q3 = listings[c].quantile(0.75)
+    iqr = q3 - q1
+    #high = q3 + 1.5*iqr
+    #plt.xlim(0, high)
+    plt.show()
+    plt.close()
+    plt.boxplot(info.values)
+    plt.title("Distribution of " + c)
+    plt.show()
+    plt.close()
+cols = {"ClosePrice": 0, "LivingArea": 0, "DaysOnMarket": -1}
+#i'm setting bounds which is the impossible values for the variable so they don't interfere with stats
+# the value of each key is the highest value the key can't be
+for col in cols:
+    print(col)
+    data = listings[col].copy()
+    data[data <= cols[col]] = np.nan
+    #listings[col] = listings[col].replace(0, np.nan)
+    print(f" Minimum:  {data.min():,.2f}")
+    print(f" Maximum:  {data.max():,.2f}")
+    print(f" Mean:  {data.mean():,.2f}")
+    print(f" Median:  {data.median():,.2f}")
+    print(f" Mode:   {data.mode()[0]:,.2f}")
+    print(f" 1st Quartile: {data.quantile(0.25):,.2f}")
+    print(f" 3rd Quartile: {data.quantile(0.75):,.2f}")
 listings.to_csv("listings.csv", index=False)
+print("\n -- columns above 90% null---")
+totalCount = len(listings)
+for col in listings.columns:
+    nullCount = listings[col].isnull().sum()
+    percent = nullCount/totalCount*100
+    if percent >= 90:
+        print(f"{col} at least 90% null values")
+
