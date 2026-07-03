@@ -54,7 +54,8 @@ for c in allCols:
     q1 = listings[c].quantile(0.25)
     q3 = listings[c].quantile(0.75)
     iqr = q3 - q1
-    #high = q3 + 1.5*iqr
+    high = q3 + 1.5*iqr
+    low = q1 - 1.5*iqr
     #plt.xlim(0, high)
     plt.show()
     plt.close()
