@@ -78,6 +78,11 @@ for col in cols:
     print(f" Mode:   {data.mode()[0]:,.2f}")
     print(f" 1st Quartile: {data.quantile(0.25):,.2f}")
     print(f" 3rd Quartile: {data.quantile(0.75):,.2f}")
+    outliers = data[(data > high) | (data < low)]
+    print(f" Outlier count: {len(outliers)}")
+    print(f" Outlier values: {outliers.values}")
+    print(f" Outlier minimum: {outliers.min()}")
+    print(f" Outlier maximum: {outliers.max()}")
 listings.to_csv("listings.csv", index=False)
 print("\n -- columns above 90% null---")
 totalCount = len(listings)
