@@ -68,7 +68,7 @@ for c in allCols:
     plt.show()
     plt.close()
 cols = {"ClosePrice": 0, "LivingArea": 0, "DaysOnMarket": -1}
-print("-----------Summary Distribution
+print("-----------Summary Distribution---------------------")
 high = q3 + 1.5*iqr
 low = q1 - 1.5*iqr
 for col in cols:
