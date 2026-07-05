@@ -41,6 +41,7 @@ sold = pd.concat([sold_2024, sold_2025,sold_2026], ignore_index=True)
 #sold = sold[sold['PropertyType']=='Residential']
 sold.to_csv("sold_all.csv", index=False)
 #406660 rows for sold
+print("-----------Properties-----------")
 print(sold.shape)
 print(sold.columns)
 print(sold.head())
@@ -59,7 +60,6 @@ for c in allCols:
     q1 = sold[c].quantile(0.25)
     q3 = sold[c].quantile(0.75)
     iqr = q3 - q1
-    #high = q3 + 1.5*iqr
     #plt.xlim(0, high)
     plt.show()
     plt.close()
@@ -68,6 +68,9 @@ for c in allCols:
     plt.show()
     plt.close()
 cols = {"ClosePrice": 0, "LivingArea": 0, "DaysOnMarket": -1}
+print("-----------Summary Distribution
+high = q3 + 1.5*iqr
+low = q1 - 1.5*iqr
 for col in cols:
     print(col)
     data = sold[col].copy()
@@ -84,6 +87,8 @@ for col in cols:
     print(f" Outlier values: {outliers.values}")
     print(f" Outlier minimum: {outliers.min()}")
     print(f" Outlier maximum: {outliers.max()}")
+data_above_list_price = data[data.ClosePrice > data.ListPrice]
+data_below_list_price = data[data.ListPrice > data.ClosePrice]
 sold.to_csv("sold_filtered.csv", index=False)
 print("\n-- columns above 90% null---")
 totalCount = len(sold)
