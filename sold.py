@@ -58,11 +58,11 @@ for c in allCols:
     plt.hist(info.values, bins=100)
     plt.title("Distribution of " + c)
     #plt.xlim(0, high)
-    plt.show()
+    plt.savefig(f"hist_{c}.png")
     plt.close()
     plt.boxplot(info.values)
     plt.title("Distribution of " + c)
-    plt.show()
+    plt.savefig(f"boxplot_{c}.png")
     plt.close()
 cols = {"ClosePrice": 0, "LivingArea": 0, "DaysOnMarket": -1}
 print("-----------Summary Distribution---------------------")
