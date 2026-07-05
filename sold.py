@@ -57,9 +57,6 @@ for c in allCols:
         continue
     plt.hist(info.values, bins=100)
     plt.title("Distribution of " + c)
-    q1 = sold[c].quantile(0.25)
-    q3 = sold[c].quantile(0.75)
-    iqr = q3 - q1
     #plt.xlim(0, high)
     plt.show()
     plt.close()
@@ -69,8 +66,6 @@ for c in allCols:
     plt.close()
 cols = {"ClosePrice": 0, "LivingArea": 0, "DaysOnMarket": -1}
 print("-----------Summary Distribution---------------------")
-high = q3 + 1.5*iqr
-low = q1 - 1.5*iqr
 for col in cols:
     print(col)
     data = sold[col].copy()
@@ -82,13 +77,26 @@ for col in cols:
     print(f" Mode:  {data.mode()[0]:,.2f}")
     print(f" 1st quartile:  {data.quantile(0.25):,.2f}")
     print(f" 3rd quartile:  {data.quantile(0.75):,.2f}")
+    q1 = data.quantile(0.25)
+    q3 = data.quantile(0.75)
+    iqr = q3 - q1
+    high = q3 + 1.5*iqr
+    low = q1 - 1.5*iqr
     outliers = data[(data > high) | (data < low)]
     print(f" Outlier count: {len(outliers)}")
     print(f" Outlier values: {outliers.values}")
     print(f" Outlier minimum: {outliers.min()}")
     print(f" Outlier maximum: {outliers.max()}")
-data_above_list_price = data[data.ClosePrice > data.ListPrice]
-data_below_list_price = data[data.ListPrice > data.ClosePrice]
+data_above_list_price = sold[sold.ClosePrice > sold.ListPrice]
+data_below_list_price = sold[sold.ListPrice > sold.ClosePrice]
+print("\n -------Above vs Below List Price------------")
+total = len(sold)
+above = len(data_above_list_price)
+below = len(data_below_list_price)
+at = total - above - below
+print(f" Percent above list price: {above / total * 100:.2f}%")
+print(f" Percent below list price: {below / total * 100:.2f}%")
+print(f" Percent at list price: {at / total * 100:.2f}%")
 sold.to_csv("sold_filtered.csv", index=False)
 print("\n-- columns above 90% null---")
 totalCount = len(sold)
